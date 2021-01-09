@@ -131,37 +131,21 @@ for (var i = 0; i < data.features.length; i++) {
     L.circle(latlng, {
         stroke: false,
         fillOpacity: 0.55,
-        color: getColor(data.features[i].properties.rate),
-        fillColor: getColor(12*7*(data.features[i].properties.rate)),
-        radius: markerSize(12*20*(data.features[i].properties.rate))
+        color: getColor(data.features[i].properties.new),
+        fillColor: getColor((data.features[i].properties.new)/30000),
+        radius: markerSize((data.features[i].properties.new)/30000)
         }).bindTooltip(props ? '<h4>' + props.NAME + '</h4>' + 
         'Increase in total cases (per day, over<br> last week, as percentage of population): ' +
-        '<b>' + props.rate + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + 
-        props.last + '</b>':
+        '<b>' + props.rate + '</b>' + '<br /> New cases last week: ' + '<b>' + 
+        props.new + '</b>':
         'Hover over a county').openTooltip().on('click', zoomToFeature)
   );
   if (data.features[i].properties.rate > 0.0003){
     localArray.push(props.rate)
   }
-  // console.log(toType(props.rate))
-  // if ((props.rate) == String(props.rate)+ "0") {
-    // console.log("warning")
-  // }
-    //     heatLocal.push(data.fe
-  // heatLocal.push(data.features[i].properties.rate)
-  // heatLocal.push([latlng[0], latlng[1], 2500*(data.features[i].properties.rate)])
-//   if ((data.features[i].properties.rate + 0) == String(data.features[i].properties.rate)) {
-//     heatLocal.push(data.features[i].properties.rate)
-//   }
-//   else {
-//     heatLocal.push(data.features[i].properties.rate)}
-// //   console.log(latlng);
-//   console.log(data.features[i].properties.rate);
-//   console.log([latlng[0], latlng[1], data.features[i].properties.rate])
-// 
 }
-// console.log(data.features)
 
+// create array from which to create heatLayer
 var max = Math.max(...localArray)
 var min = Math.min(...localArray)
 console.log(localArray)
@@ -172,8 +156,6 @@ for (var i = 0; i < data.features.length; i++) {
   if ((((data.features[i].properties.rate)-min)/(max-min)) > 0.1){
     heatLocal.push([latlng[0], latlng[1], (((data.features[i].properties.rate)-min)/(max-min))])
   }
-  // console.log(heatLocal)
-  
 }
 
 console.log(heatLocal.length)
@@ -193,17 +175,32 @@ info.addTo(map);
 var georates = L.layerGroup([rates,geojson]).addTo(map);
 var dots = L.layerGroup(locations);
 
+var voteHeat = []
+
+d3.csv("voteCount.csv", function(dataA) {
+  console.log(dataA[0])
+  for (var i = 0; i < dataA.length; i++) {
+    var county = dataA[i]
+    voteHeat.push([county.Lat, county.Long_, (county.candidatevotes/county.totalvotes)])
+  }
+});
+var votes = L.heatLayer(voteHeat, {gradient:{0.2: 'blue', 0.3: 'lime', 0.4: 'red'}, radius:18, maxZoom:13, minOpacity:0.1})
+
 var overlayMaps = {
   "Rates": georates,
   "Dots": dots,
   "Heat": heat
 };
 
+var voteOverlay = {
+  "Votes": votes
+}
+
 // create controls for choosing map type and overlay
 // Note: in order to allow for multiple overlays at once, 
 // create only one control, place base maps first, and 
 // replace 'null' with the overlay maps array
-L.control.layers(overlayMaps,null,{collapsed:false}).addTo(map);
+L.control.layers(overlayMaps,voteOverlay,{collapsed:false}).addTo(map);
 L.control.layers(baseMaps).addTo(map);
 
 });

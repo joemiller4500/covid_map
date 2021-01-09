@@ -4,13 +4,6 @@ body {
   margin: 0;
 }
 
-/* set map, body, and html to 100% of the screen size */
-/* #map,
-body,
-html {
-  height: 100%;
-} */
-
 /*Setup*/
 html,
 body {
@@ -30,8 +23,6 @@ body,
   font: 14px Arial, Helvetica, sans-serif;
   background: white;
   background: rgba(255, 255, 255, 0.8);
-  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
-  /*border-radius: 5px;*/
   line-height: 24px;
   color: #555;
 }
@@ -70,7 +61,6 @@ body,
 }
 .info h4 {
   margin: 0 0 5px;
-  color: #777;
 }
 
 #map {

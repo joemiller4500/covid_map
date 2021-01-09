@@ -8,36 +8,32 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
   integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
   crossorigin=""/>
-
-  <!--D3 cdn-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
-
   <!-- Our CSS -->
   <link rel="stylesheet" type="text/css" href="style.css">
-
-  <link href="https://api.tiles.mapbox.com/mapbox.js/v1.0.0/mapbox.css" rel='stylesheet' />
-  <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox.js/v1.0.0/mapbox.js"></script>
-
- 
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-  <!-- The div where we will inject our map -->
-  <div id="map"></div>
+  <!-- Jumbotron to contain title, map, and description -->
+  <div class="jumbotron">
+    <h1 style="text-align: center;">Covid by County</h1>
+    <div id="map", style="height:500px;"></div>
+    <p>Explaination</p>
+  </div>
+  <p>Credit</p>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
   integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
   crossorigin=""></script>
+  <!--D3 cdn-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
   <!-- d3 JavaScript -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <!-- Leaflet-Choropleth JavaScript -->
-  <!-- <script type="text/javascript" src="choropleth.js"></script> -->
-  <!-- MomentJS -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
   <!-- API key -->
   <script type="text/javascript" src="config.js"></script>
   <!-- Our JS -->
-  <script type="text/javascript" src="logic2.js"></script>
+  <script type="text/javascript" src="logic.js"></script>
 </body>
 </html>

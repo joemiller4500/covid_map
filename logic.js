@@ -1,11 +1,20 @@
-var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
-var boundaryUrl = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
-
-// Perform a GET request to the query URL
+// import GeoJSON file created in data.py
 d3.json("usgeo.geojson", function(data) {
   var geojson;
-  // var mapboxAccessToken = API_KEY;
 
+// function used to output specific object type during
+// testing, taken from Angus Croll
+var toType = function(obj) {
+    return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+  }
+
+// load background layers from mapbox via Leaflet
+var darkmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 18,
+  id: "dark-v10",
+  accessToken: API_KEY
+});
 var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
     maxZoom: 18,
@@ -13,19 +22,12 @@ var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{
     accessToken: API_KEY
 });
 
-var outdoors = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 18,
-  id: "outdoors-v11",
-  accessToken: API_KEY
-});
-  // .addTo(map);
-
 var baseMaps = {
-  "Light Map": lightmap,
-  "Outdoors": outdoors
+  "Dark Map": darkmap,
+  "Light Map": lightmap
 };
 
+// function to give color to features on map
 function getColor(d) {
   return d > 0.09 ? '#67000d' :
          d > 0.08  ? '#a50f15' :
@@ -40,42 +42,8 @@ function getColor(d) {
                         '#fff5f0'
 }
 
-
-function highlightFeatureA(e) {
-  var layer = e.target;
-
-  layer.setStyle({
-    stroke: false,
-    fillOpacity: 0.75,
-    color: getColor(data.features[i].properties.rate),
-    fillColor: getColor(data.features[i].properties.rate),
-    radius: markerSize(data.features[i].properties.rate)
-  });
-
-  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-      layer.bringToFront();
-      dots.bringToFront();
-  }
-  info.update(layer.feature.properties);
-}
-
-function resetHighlightA(e) {
-  dots.resetStyle(e.target);
-  info.update();
-}
-
-function zoomToFeatureA(e) {
-  map.fitBounds(e.target.getBounds());
-}
-
-function onEachFeatureA(feature, layer) {
-  layer.on({
-      mouseover: highlightFeatureA,
-      mouseout: resetHighlightA,
-      click: zoomToFeatureA
-  });
-}
-
+// function for cloropleth style, color based on 'perc' 
+// calculated in data.py
 function style(feature) {
   return {
       fillColor: getColor(feature.properties.perc),
@@ -87,6 +55,8 @@ function style(feature) {
   };
 }
 
+// functions to provide functionality for info on cloropleth,
+// zoom also used for dot map
 function highlightFeature(e) {
   var layer = e.target;
 
@@ -121,16 +91,15 @@ function onEachFeature(feature, layer) {
   
 }
 
-
+// create cloropleth overlay with county line GeoJSON data
 var rates = L.geoJson(data, {style: style});
-// .addTo(map);
 
 geojson = L.geoJson(data, {
   style: style,
   onEachFeature: onEachFeature
 });
-// .addTo(map);
 
+// create info box for cloropleth map
 var info = L.control();
 
 info.onAdd = function (map) {
@@ -139,74 +108,63 @@ info.onAdd = function (map) {
     return this._div;
 };
 
-// method that we will use to update the control based on feature properties passed
 info.update = function (props) {
     this._div.innerHTML = (props ? '<h4>' + props.NAME + '</h4>' + 
-        'Rate of growth for last 7 days: ' + props.rate + '<br /> Last confirmed COVID Case Total: ' + props.last + '<br /> Total cases as percentage of population: ' + props.perc
-        : 'Hover over a county');
+        'Total cases over last week <br> (per day, as percentage of total cases reported): ' + '<b>' + props.perc + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + props.last + '</b>': 'Hover over a county');
 };
 
-locations = []
-
+// function to determine size of dots for dot map
 function markerSize(num) {
-  return num * 90000;
+  return num * 120000;
 }
 
-function markerOnClick(e)
-{
-  console.log(e)
-  alert("hi. you clicked the marker at " + e.latlng);
-}
-
-function styleA(feature){
-  return {
-      stroke: false,
-      fillOpacity: 0.75,
-      // color: "white",
-      // fillColor: "white",
-      // radius: 50
-      color: getColor(feature.properties.rate),
-      fillColor: getColor(feature.properties.rate),
-      radius: markerSize(feature.properties.rate)}
-}
+// create dot map with size and color based on 'rate'
+// calculated in data.py
+locations = []
 console.log(data.features.length)
 for (var i = 0; i < data.features.length; i++) {
-  // var point = data;
-  // console.log(data.features[i].properties)
-  latlng = [data.features[i].properties.Lat,data.features[i].properties.Long_]    
-  locations.push(
+    props = data.features[i].properties
+    latlng = [data.features[i].properties.Lat,data.features[i].properties.Long_]    
+    locations.push(
     L.circle(latlng, {
-      style: styleA,
-      onEachFeature: onEachFeatureA
-    }).bindTooltip("my tooltip text").openTooltip()
+        stroke: false,
+        fillOpacity: 0.55,
+        color: getColor(data.features[i].properties.rate),
+        fillColor: getColor(12*7*(data.features[i].properties.rate)),
+        radius: markerSize(12*20*(data.features[i].properties.rate))
+        }).bindTooltip(props ? '<h4>' + props.NAME + '</h4>' + 
+        'Increase in total cases (per day, over<br> last week, as percentage of population): ' +
+        '<b>' + props.rate + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + 
+        props.last + '</b>':
+        'Hover over a county').openTooltip().on('click', zoomToFeature)
   );
 }
 
-
-
+// create map object, appended to div named 'map' 
+// in index.html
 var map = L.map('map', {
   center: [37.8, -96],
   zoom: 4,
-  layers: [lightmap]
+  layers: [darkmap]
 })
 
-var dots = L.layerGroup(locations);
+// add info box to map
+info.addTo(map);
+
+// create layerGroups for the two sets of overlays
 var georates = L.layerGroup([rates,geojson]).addTo(map);
+var dots = L.layerGroup(locations);
 
 var overlayMaps = {
   "Rates": georates,
   "Dots": dots
 };
-// .setView([37.8, -96], 4);
 
-info.addTo(map);
-
-var legend = L.control({ position: "bottomright" });
-
-L.control.layers(baseMaps, overlayMaps, {
-  collapsed: false
-}).addTo(map);
-
-// legend.addTo(map);
+// create controls for choosing map type and overlay
+// Note: in order to allow for multiple overlays at once, 
+// create only one control, place base maps first, and 
+// replace 'null' with the overlay maps array
+L.control.layers(overlayMaps,null,{collapsed:false}).addTo(map);
+L.control.layers(baseMaps).addTo(map);
 
 });

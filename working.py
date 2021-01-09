@@ -15,21 +15,21 @@ censusTot = censusTot[['FIPS', 'POPESTIMATE2019']]
 # print(tsConfUS['GEOID'][0])
 usgeo = gpd.read_file("cb_2014_us_county_5m.shp")
 usgeo['FIPS'] = usgeo['GEOID']
-# print(usgeo)
 
 usgeo = usgeo.merge(tsConfUS, on = 'FIPS')
 # print(type(usgeo['FIPS'][0]))
 # print(type(censusTot['FIPS'][0]))
 usgeo = usgeo.merge(censusTot, on = 'FIPS')
+# print(usgeo)
 
 
 usgeo['last'] = usgeo.iloc[:,-2]
-usgeo['rate'] = (usgeo['last'] - usgeo.iloc[:,-8])/usgeo['last']
+usgeo['rate'] = (usgeo['last'] - usgeo.iloc[:,-8])/(7*(usgeo['last'] + usgeo.iloc[:,-8]/2))
 usgeo['rate'] = usgeo['rate'].round(decimals = 4)
-usgeo = usgeo[['NAME','FIPS','geometry','rate','last', 'POPESTIMATE2019']]
+usgeo = usgeo[['NAME','FIPS','geometry','rate','last', 'POPESTIMATE2019','Lat','Long_']]
 usgeo['perc'] = (usgeo['last']/usgeo['POPESTIMATE2019']).round(decimals = 4)
 print(usgeo)
-# print(usgeo[["rate"]].describe())
+# print(usgeo[["perc"]].describe())
 
 usgeo.to_file("usgeo.geojson", driver='GeoJSON')
 

@@ -34,5 +34,3 @@ usgeo['perc'] = (usgeo['last']/usgeo['POPESTIMATE2019']).round(decimals = 4)
 
 # use GeoPandas to export the dataframe to a GeoJSON file
 usgeo.to_file("usgeo.geojson", driver='GeoJSON')
-
-print(gpd.__version__)

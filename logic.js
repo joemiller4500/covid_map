@@ -121,6 +121,8 @@ function markerSize(num) {
 // create dot map with size and color based on 'rate'
 // calculated in data.py
 locations = []
+heatLocal = []
+localArray = []
 console.log(data.features.length)
 for (var i = 0; i < data.features.length; i++) {
     props = data.features[i].properties
@@ -138,8 +140,44 @@ for (var i = 0; i < data.features.length; i++) {
         props.last + '</b>':
         'Hover over a county').openTooltip().on('click', zoomToFeature)
   );
+  if (data.features[i].properties.rate > 0.0003){
+    localArray.push(props.rate)
+  }
+  // console.log(toType(props.rate))
+  // if ((props.rate) == String(props.rate)+ "0") {
+    // console.log("warning")
+  // }
+    //     heatLocal.push(data.fe
+  // heatLocal.push(data.features[i].properties.rate)
+  // heatLocal.push([latlng[0], latlng[1], 2500*(data.features[i].properties.rate)])
+//   if ((data.features[i].properties.rate + 0) == String(data.features[i].properties.rate)) {
+//     heatLocal.push(data.features[i].properties.rate)
+//   }
+//   else {
+//     heatLocal.push(data.features[i].properties.rate)}
+// //   console.log(latlng);
+//   console.log(data.features[i].properties.rate);
+//   console.log([latlng[0], latlng[1], data.features[i].properties.rate])
+// 
+}
+// console.log(data.features)
+
+var max = Math.max(...localArray)
+var min = Math.min(...localArray)
+console.log(localArray)
+console.log(max)
+for (var i = 0; i < data.features.length; i++) {
+  props = data.features[i].properties
+  latlng = [props.Lat,props.Long_] 
+  if ((((data.features[i].properties.rate)-min)/(max-min)) > 0.1){
+    heatLocal.push([latlng[0], latlng[1], (((data.features[i].properties.rate)-min)/(max-min))])
+  }
+  // console.log(heatLocal)
+  
 }
 
+console.log(heatLocal.length)
+var heat = L.heatLayer(heatLocal, {gradient:{0.2: 'blue', 0.3: 'lime', 0.4: 'red'}, radius:20, maxZoom:13, minOpacity:0.1});
 // create map object, appended to div named 'map' 
 // in index.html
 var map = L.map('map', {
@@ -157,7 +195,8 @@ var dots = L.layerGroup(locations);
 
 var overlayMaps = {
   "Rates": georates,
-  "Dots": dots
+  "Dots": dots,
+  "Heat": heat
 };
 
 // create controls for choosing map type and overlay

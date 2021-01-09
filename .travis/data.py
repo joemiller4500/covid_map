@@ -16,6 +16,9 @@ censusTot = pd.read_csv('https://www2.census.gov/programs-surveys/popest/dataset
 censusTot['FIPS'] = censusTot['STATE'].astype(str).str.pad(width = 2, side='left', fillchar='0') + censusTot['COUNTY'].astype(str).str.pad(width = 3, side='left', fillchar='0')
 censusTot = censusTot[['FIPS', 'POPESTIMATE2019']]
 
+voteCount = pd.read_csv('countypres_2000-2016.csv')
+print(voteCount)
+
 # read in shapefile with GeoPandas and rename FIPS key
 usgeo = gpd.read_file("geo_data/cb_2014_us_county_5m.shp")
 usgeo['FIPS'] = usgeo['GEOID']

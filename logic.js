@@ -181,10 +181,11 @@ d3.csv("voteCount.csv", function(dataA) {
   console.log(dataA[0])
   for (var i = 0; i < dataA.length; i++) {
     var county = dataA[i]
+    if ((county.candidatevotes/county.totalvotes)>0.5){
     voteHeat.push([county.Lat, county.Long_, (county.candidatevotes/county.totalvotes)])
-  }
+  }}
 });
-var votes = L.heatLayer(voteHeat, {gradient:{0.2: 'blue', 0.3: 'lime', 0.4: 'red'}, radius:18, maxZoom:13, minOpacity:0.1})
+var votes = L.heatLayer(voteHeat, {gradient:{0.2: 'blue', 0.3: 'lime', 0.37: 'red'}, radius:16, maxZoom:13, minOpacity:0.1})
 
 var overlayMaps = {
   "Rates": georates,

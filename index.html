@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Covid by County Dashboard</title>
+  <title>COVID-19 by County Dashboard</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
@@ -20,11 +20,10 @@
 <body>
   <!-- Jumbotron to contain title, map, and description -->
   <div class="jumbotron">
-        <h1 id="title" style="text-align: center;">Covid by County</h1>
+        <h1 id="title" style="text-align: center;">COVID-19 by County</h1>
     <div class="row">
       <div class="col-lg-7">
         <div id="map", style="height:400px;"></div>
-        <p>Explaination</p>
         <!-- <div class="well">
           <h5>Test Subject ID No.:</h5>
           <select id="selDataset" onchange="optionChanged(this.value)"></select>
@@ -51,7 +50,44 @@
       </div>
     </div>
   </div>
-<p>Credit</p>
+  <div class="row">
+    <div class="col-lg-1"></div>
+    <div class = "col-lg-10">
+      <p>Thank you for visiting my COVID-19 Dashboard page! This project came about on the tail end of quarantining 
+        after possible exposure to the virus, in a period of feeling anxious, fearful, and a bit useless in the face 
+        of a threat that we still are trying to understand. I found that no matter where I looked, I would find 
+        sensationalized reporting, whether I was being promised the light at the end of the tunnel, or an endless
+        struggle, I felt like I couldn't make sense of the surges, the quarantines, the openings and the closures. 
+        I found that the most informative sources tended to be the apps people had made from the data, because data 
+        did not become politicized, it was not monetized, it's just data. I found at the same time that while I felt 
+        that these purely data based sources were the best monitors of the spread of the virus I could find, they did
+        not offer the same sort of nuance that I saw in print media. They would tell me how many people were getting 
+        sick, but unlike in print, I didn't find why people were getting sick, or who those poeple were in the places 
+        most affected by the virus. That's why I decided to make this dashboard.</p>
+        <p>Two things I saw correlated to the virus 
+        (and which are measured on the county level) were higher levels among members of minority groups, and greater
+        spread in places were people didn't want to wear masks. Because there isn't concrete data at a county level for
+        mask use, I used county level voting results from the 2016 presidential election. I realize the apparent
+        shortcoming of this as a correlation to not wearing masks - it is a completely different statistic. Truly,
+        without bias I cannot correlate presidential voting with mask wearing. I want to emphasize this point - voting
+        for one candidate or another does not mean that someone had a certain predelection towards wearing or not wearing
+        a mask. It is, however, the best source of data I had at the county level that could be correlated at all. I think
+        it would be naeve to ignore that the wearing of a mask became politicized and that Donald Trump, for at least
+        some time durring his presidency, was a champion of personal liberties in the face of the science behind masks.
+        To that end, I make no conclusions about correlation with the spread of the virus, I simply encourage you to 
+        click around and make your own conclusions.
+      </p>
+      <hr>
+      <p>
+        All COVID-19 data comes from the COVID-19 Data Repository by the Center for Systems Science and Engineering 
+        (CSSE) at Johns Hopkins University and can be found <a href="https://github.com/CSSEGISandData/COVID-19">
+        https://github.com/CSSEGISandData/COVID-19</a>. All data on total population as well as racial/ethnic data comes 
+        from the US Census Bureau, along with shapefiles for county lines. Election data comes from Stephen Pettigrew and 
+        was published by the Harvard Dataverse.
+      </p>
+    </div>
+    <div class="col-lg-1"></div>
+  </div>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"

@@ -61,19 +61,20 @@
       <p>Thank you for visiting my COVID-19 Dashboard page! This project came about on the tail end of quarantining 
         after possible exposure to the virus, in a period of feeling anxious, fearful, and a bit useless in the face 
         of a threat that we still are trying to understand. I found that no matter where I looked, I would find 
-        sensationalized reporting, whether I was being promised the light at the end of the tunnel, or an endless
+        sensationalized reporting, whether I was being promised light at the end of the tunnel, or an endless
         struggle, I felt like I couldn't make sense of the surges, the quarantines, the openings and the closures. 
-        I found that the most informative sources tended to be the apps people had made from the data, because data 
-        did not become politicized, it was not monetized, it's just data. I found at the same time that while I felt 
-        that these purely data based sources were the best monitors of the spread of the virus I could find, they did
+        I found the most informative sources tended to be apps people had made purely from data, because data 
+        did not become politicized, it was not monetized, it's just data. I found at the same time that while pure
+        data based sources were the best monitors of the spread of the virus I could find, they did
         not offer the same sort of nuance that I saw in print media. They would tell me how many people were getting 
         sick, but unlike in print, I didn't find why people were getting sick, or who those poeple were in the places 
         most affected by the virus. That's why I decided to make this dashboard.</p>
         <p>Two things I saw correlated to the virus 
         (and which are measured on the county level) were higher levels among members of minority groups, and greater
         spread in places were people didn't want to wear masks. Because there isn't concrete data at a county level for
-        mask use, I used county level voting results from the 2016 presidential election. I realize the apparent
-        shortcoming of this as a correlation to not wearing masks - it is a completely different statistic. Truly,
+        mask use, I used county level voting results from the 2016 presidential election (county level election results 
+        for 2020 were not yet aggregated). I realize the apparent shortcoming of this as a correlation to not wearing 
+        masks - it is a completely different statistic. Truly,
         without bias I cannot correlate presidential voting with mask wearing. I want to emphasize this point - voting
         for one candidate or another does not mean that someone had a certain predelection towards wearing or not wearing
         a mask. It is, however, the best source of data I had at the county level that could be correlated at all. I think
@@ -99,19 +100,22 @@
         from the US Census Bureau, along with shapefiles for county lines. Election data comes from Stephen Pettigrew and 
         was published by the Harvard Dataverse: MIT Election Data and Science Lab, 2018, "County Presidential Returns 
         2000-2016.md", County Presidential Election Returns 2000-2016, <a href="https://doi.org/10.7910/DVN/VOQCHQ/GG18M2">
-        https://doi.org/10.7910/DVN/VOQCHQ/GG18M2</a>, Harvard Dataverse, V6.
+        https://doi.org/10.7910/DVN/VOQCHQ/GG18M2</a>, Harvard Dataverse, V6. Daily updates handled through 
+        <a href="https://travis-ci.com/">Travis CI</a>. Repository hosted by <a href="https://github.com/">Github</a> and 
+        page by <a href="https://pages.github.com/">Github Pages</a>.
       </p>
       <hr>
       <p>
         For anyone interested in the code behind this site, please visit my <a href="https://github.com/joemiller4500/covid_map">
-        git repository</a> from which this site is hosted. All code inspiration comes from the doccumentation of the libraries
+        Git repository</a> from which this site is hosted. All code inspiration comes from the doccumentation of the libraries
         used and from public forums. If you're interested in my experience creating this site, or if any questions come up, please 
         reach out to me via <a href="https://www.linkedin.com/in/joseph-wa-miller/">LinkedIn</a> or <a href="mailto:joemiller4500@gmail.com">
-        email</a>
+        email</a>.
       </p>
     </div>
     <div class="col-lg-1"></div>
   </div>
+  <p id="update">Update</p>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"

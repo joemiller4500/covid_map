@@ -102,7 +102,7 @@ for index, row in tsConfUS.iterrows():
 keyed = {}
 for i in range(0,(len(fipsy))):
     keyed.update({fipsy.values[i]: np.asarray(allDates[i])})
-    print(allDates[i])
+    # print(allDates[i])
 tsConfFIPS = pd.DataFrame.from_dict(keyed, orient='index')
 tsConfFIPS['new'] = tsConfFIPS.apply(lambda r: tuple(r), axis=1).apply(np.array)
 tsConfFIPS = tsConfFIPS['new'].reset_index()
@@ -144,7 +144,7 @@ tsDeathFIPS = pd.DataFrame.from_dict(keyed, orient='index')
 tsDeathFIPS['new'] = tsDeathFIPS.apply(lambda r: tuple(r), axis=1).apply(np.array)
 tsDeathFIPS = tsDeathFIPS['new'].reset_index()
 tsDeathFIPS.rename(columns={'index': 'FIPS', 'new': 'timeseriesD'},inplace=True)
-print(tsDeathFIPS)
+# print(tsDeathFIPS)
 
 
 # import census total population data
@@ -262,7 +262,7 @@ usgeo['rateC'] = (usgeo['0ago'] - usgeo['6ago'])/(7*(usgeo['POPESTIMATE2019']))
 usgeo['rateC'] = usgeo['rateC'].round(decimals = 6)
 usgeo['newC'] = (usgeo['0ago'] - usgeo['6ago'])
 # usgeo['perc'] = (usgeo['lastC']/usgeo['POPESTIMATE2019'])
-usgeo['perc'] = (usgeo['0ago']/usgeo['POPESTIMATE2019']).round(decimals = 4)
+usgeo['perten'] = (10000*usgeo['0ago']/usgeo['POPESTIMATE2019']).round(decimals = 4)
 tsConfFIPS = pd.DataFrame(data = {'NAME':usgeo['NAME'], 'FIPS':usgeo['FIPS']})
 tsConfFIPS['timeseries'] = usgeo['timeseries']
 tsConfFIPS.set_index('FIPS', inplace=True, drop=True)
@@ -273,9 +273,10 @@ tsDeathFIPS['timeseries'] = usgeo['timeseriesD']
 tsDeathFIPS.set_index('FIPS', inplace=True, drop=True)
 tsDeathFIPS.drop(labels='NAME', axis=1, inplace=True)
 
-
-usgeo = usgeo[['NAME','FIPS','geometry', 'POPESTIMATE2019','rateC','lastC','newC','perc','WHT','AA','AI','AS','PI','MX', 'HISP','trumpVotes','clintonVotes','otherVotes']]
-print(usgeo)
+# print(usgeo['Province_State'])
+# for item in usgeo.columns:
+#     print(item)
+usgeo = usgeo[['NAME','FIPS','geometry', 'Province_State', 'POPESTIMATE2019','rateC','lastC','newC','perten','WHT','AA','AI','AS','PI','MX', 'HISP','trumpVotes','clintonVotes','otherVotes']]
 # for item in usgeo[0]:
     # print(type(item))
 tsConfFIPS.to_json("static/data/confirmedTS.json", orient="columns")

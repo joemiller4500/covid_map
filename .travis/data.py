@@ -262,7 +262,7 @@ usgeo['rateC'] = (usgeo['0ago'] - usgeo['6ago'])/(7*(usgeo['POPESTIMATE2019']))
 usgeo['rateC'] = usgeo['rateC'].round(decimals = 6)
 usgeo['newC'] = (usgeo['0ago'] - usgeo['6ago'])
 # usgeo['perc'] = (usgeo['lastC']/usgeo['POPESTIMATE2019'])
-usgeo['perten'] = (10000*usgeo['0ago']/usgeo['POPESTIMATE2019']).round(decimals = 4)
+usgeo['perten'] = (10000*usgeo['newC']/usgeo['POPESTIMATE2019']).round(decimals = 4)
 tsConfFIPS = pd.DataFrame(data = {'NAME':usgeo['NAME'], 'FIPS':usgeo['FIPS']})
 tsConfFIPS['timeseries'] = usgeo['timeseries']
 tsConfFIPS.set_index('FIPS', inplace=True, drop=True)

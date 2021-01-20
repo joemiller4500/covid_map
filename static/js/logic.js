@@ -86,14 +86,14 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
         // function to give color to features on map
         function getColor(d) {
-          return d > 0.14 ? '#67000d' :
-                d > 0.12  ? '#a50f15' :
-                d > 0.10  ? '#cb181d' :
-                d > 0.08  ? '#ef3b2c' :
-                d > 0.06   ? '#fb6a4a' :
-                d > 0.045   ? '#fc9272' :
-                d > 0.03   ? '#fcbba1' :
-                d > 0.02   ? '#fee0d2' :
+          return d > 70 ? '#67000d' :
+                d > 60  ? '#a50f15' :
+                d > 50  ? '#cb181d' :
+                d > 40  ? '#ef3b2c' :
+                d > 30   ? '#fb6a4a' :
+                d > 20   ? '#fc9272' :
+                d > 10   ? '#fcbba1' :
+                d > 5   ? '#fee0d2' :
                 d > 0      ? '#fff5f0':
                 d = 'null'   ? '#ccffcc' :
                                 '#fff5f0'
@@ -103,7 +103,7 @@ d3.json("static/data/usgeo.geojson", function(data) {
         // calculated in data.py
         function style(feature) {
           return {
-              fillColor: getColor((feature.properties.perten)/10000),
+              fillColor: getColor((feature.properties.perten)),
               weight: 1,
               opacity: 1,
               color: 'white',
@@ -296,8 +296,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
               mode: "gauge+number",
               // line:{color: "#ff0000"}
               gauge: {
-                bar: { color: "red" },
-                axis: { range: [null, 2000] }
+                bar: { color: getColor(feature.target.feature.properties.perten) },
+                axis: { range: [null, 100] }
               }
             }
           ];
@@ -376,7 +376,7 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
         info.update = function (props) {
             this._div.innerHTML = (props ? '<h4>' + props.NAME + '</h4>' + 
-                'New cases over last week per 10,000 population: ' + '<b>' + props.perten + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + props.lastC + '</b>': 'Hover over a county');
+                'New cases reported over last week: ' + '<b>' + props.newC + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + props.lastC + '</b>': 'Hover over a county');
         };
 
         // function to determine size of dots for dot map
@@ -580,9 +580,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
             type: "indicator",
             mode: "gauge+number",
             gauge: {
-              bar: { color: "red" }
-            // gauge: {
-            //   axis: { range: [null, 100] }
+              bar: { color: "red" },
+              axis: { range: [null, 100] }
             }
           }
         ];

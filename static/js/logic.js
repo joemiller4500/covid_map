@@ -1,83 +1,24 @@
 
 // import GeoJSON file created in data.py
 d3.json("static/data/usgeo.geojson", function(data) {
-
-  Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv", function(err, rows){
-
-//   function unpack(rows, key) {
-//   return rows.map(function(row) { return row[key]; });
-
-// }
-// console.log(unpack(rows, 'Date'))
-// console.log(unpack(rows, 'AAPL.High'))
-})
-
   var geojson;
-
-  var toType = function(obj) {
-          return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
-        }
-
-  var dates = []
   d3.json("static/data/dates.json", function(dataD) {
-    // console.log(data)
-    dates = dataD;
-    // console.log(dates)
     d3.json("static/data/confirmedTS.json", function(dataE){
       d3.json("static/data/deathsTS.json", function(dataF){
-        // console.log(dataF)
-        console.log(dataE.timeseries['01003'].map(String))
-        // var dataF = JSON.parse(dataE)
-        // console.log(dataF)
-        // console.log(dataD)
-        // console.log(dataD[0])
-        // console.log(dataD[dataD.length - 1])
-
-
-      // function used to output specific object type during
-      // testing, taken from Angus Croll
-        
-
-        // d3.json("static/data/confirmedTS.json", function(dataB){
-        //   d3.json("static/data/dates.json", function(dataC){
-        //     console.log(dataC)
-        //     for(var i=0;i<data.features.length;i++){
-        //       console.log(dataB)
-        //       data.features[i].properties.timeseries = dataB.timeseries[i];
-        //       data.features[i].properties.dateseries = dataC;
-        //     }
-        //   })
-        // });
-        // var datapoint = []
-        // datapoint = data.features[0].properties.timeseries;
-      // console.log(data.features.length);
-        // var datapoint = data.features[0].properties
-        // console.log(datapoint);
-        // for (var item in datapoint){
-        //   console.log(item);
-        // }
-        // data.features[0].properties.conf = [[0,1,2]];
-        // console.log(data.features[0].properties);
-        // featureById = {}
-        // data.features.forEach(f => featureById[f.id] = f) 
-        // featureById[0].properties.value = 1
-        // featureById[1].properties.value = 1
       // load background layers from mapbox via Leaflet
-
-
         var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
             attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
             maxZoom: 18,
             id: "light-v10",
             accessToken: API_KEY
         });
+
         var darkmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
           attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
           maxZoom: 18,
           id: "dark-v10",
           accessToken: API_KEY
         });
-       
 
         var baseMaps = {
           "Light Map": lightmap,
@@ -112,39 +53,19 @@ d3.json("static/data/usgeo.geojson", function(data) {
           };
         }
 
+        // function to load new cases timeseries from FIPS value
         function getTimeseriesC(fips) {
-          console.log(dataE.timeseries[fips])
           return dataE.timeseries[fips].map(String)
-          // console.log(dataE.timeseries[fips])
-          // let ret = Object.values(dataE.timeseries).filter(function(d) {
-          //   return d == fips
-          // })
-          // console.log(ret)
-          // return ret
-          // return dataE.timeseries.filter(
-          //     function(data){ return data.FIPS == fips }
-          // );
         }
 
+        // function to load total deaths timeseries from FIPS value
         function getTimeseriesD(fips) {
-
-          // console.log(dataF.timeseries[fips])
           return dataF.timeseries[fips].map(String)
-          // console.log(Object.values(dataF))
-          let ret = Object.values(dataF).filter(function(d) {
-            return d == fips
-          })
-          // console.log(ret)
-          return ret
-          // return dataF.timeseries.filter(
-          //     function(data){ return data.FIPS == fips }
-          // );
         }
 
+        // function to update line graph
         function setLineTraces(feature){
-
           var fips = feature.target.feature.properties.FIPS
-          // var title = feature.sourceTarget.feature.properties.NAME + " County, " + feature.sourceTarget.feature.properties.Province_State
           var title = " "
           var trace1 = {
             type: "scatter",
@@ -171,7 +92,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
             title: title ,
             xaxis: {
               autorange: false,
-              // range: [dataD[dataD.length - 1], dataD[0]],
               range: [dataD[0], dataD[dataD.length - 1]],
               rangeselector: {buttons: [
                   {
@@ -189,7 +109,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
                   {step: 'all'}
                 ]},
               rangeslider: {range: [dataD[0], dataD[dataD.length - 1]]},
-                // range: [dataD[dataD.length - 1], dataD[0]]},
               type: 'date'
             },
             yaxis: {
@@ -198,28 +117,10 @@ d3.json("static/data/usgeo.geojson", function(data) {
               type: 'linear'
             }
           };
-  
           Plotly.react('timeseries', dataT, layout);
-
-
-          // var fips = feature.target.feature.properties.FIPS
-          // var title = feature.sourceTarget.feature.properties.NAME + " County"
-          // var layout_update = {
-          //   title: "title", // updates the title
-          // };
-        // var data_update = {
-        //     // 'marker.color': 'red'
-        // };
-          // Plotly.react("timeseries", layout_update)
-        
-          // console.log(title)
-          // var string =
-          // Plotly.restyle("timeseries", "y", [getTimeseriesC(fips),getTimeseriesD(fips)]);
-          // Plotly.restlye("timeseries", "title", [''])
-          // Plotly.restyle("timeseries", "y", [getTimeseriesD(fips),1]);
-          
         }
 
+        // function to update Radar graph
         function setRadarTraces(feature){
           if (feature.target.feature.properties.clintonVotes > feature.target.feature.properties.trumpVotes){
             var col = {color: '#0000ff'}
@@ -227,7 +128,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
           else{
             var col = {color: '#ff0000'}
           }
-          console.log(feature.target.feature.properties.otherVotes)
           dataR = [{
             type: 'scatterpolar',
             r: [feature.target.feature.properties.clintonVotes,feature.target.feature.properties.trumpVotes,feature.target.feature.properties.otherVotes],
@@ -248,6 +148,7 @@ d3.json("static/data/usgeo.geojson", function(data) {
           Plotly.react("radar",dataR,layout)
         }
 
+        // function to update bar graph
         function setBarTrace(feature){
           var dataB = [
             {
@@ -259,13 +160,11 @@ d3.json("static/data/usgeo.geojson", function(data) {
           var layoutUpdate = {
             "margin.b": 150
           };
-          
-          
           Plotly.react('bar', dataB);
           Plotly.relayout(bar, layoutUpdate);
-          // Plotly.restyle("bar","y",[feature.target.feature.properties.WHT, feature.target.feature.properties.AA, feature.target.feature.properties.AI, feature.target.feature.properties.AS, feature.target.feature.properties.PI, feature.target.feature.properties.MX])
         }
 
+        // function to update lower guage chart
         function setGaugeTrace(feature){
           var dataG = [
             {
@@ -279,11 +178,10 @@ d3.json("static/data/usgeo.geojson", function(data) {
               }
             }
           ];
-          
-          // var layout = { width: 100, height: 100, margin: { t: 0, b: 0 } };
           Plotly.react('gauge', dataG, layout);
         }
 
+        // function to update upper guage chart
         function setGaugeCTrace(feature){
           var fips = feature.target.feature.properties.FIPS
           
@@ -294,31 +192,26 @@ d3.json("static/data/usgeo.geojson", function(data) {
               title: { text: "New cases over last week <br> per 10,000 popluation" },
               type: "indicator",
               mode: "gauge+number",
-              // line:{color: "#ff0000"}
               gauge: {
                 bar: { color: getColor(feature.target.feature.properties.perten) },
                 axis: { range: [null, 100] }
               }
             }
           ];
-          
-          // var layout = { width: 100, height: 100, margin: { t: 0, b: 0 } };
           Plotly.react('gaugeC', dataGC, layout);
         }
 
+        // function to call all Plotly updates
         function setTraces(feature) {
           setLineTraces(feature)
           setRadarTraces(feature)
           setBarTrace(feature)
           setGaugeTrace(feature)
           setGaugeCTrace(feature)
-          // var fips = feature.target.feature.properties.FIPS
           var title = feature.sourceTarget.feature.properties.NAME + " County, " + feature.sourceTarget.feature.properties.Province_State
           var element = document.getElementById("title"); 
           element.innerHTML = title;
         }
-
-
 
         // functions to provide functionality for info on cloropleth,
         // zoom also used for dot map
@@ -359,7 +252,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
         // create cloropleth overlay with county line GeoJSON data
         var rates = L.geoJson(data, {style: style});
-
         geojson = L.geoJson(data, {
           style: style,
           onEachFeature: onEachFeature
@@ -367,7 +259,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
         // create info box for cloropleth map
         var info = L.control();
-
         info.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
             this.update();
@@ -379,10 +270,10 @@ d3.json("static/data/usgeo.geojson", function(data) {
                 'New cases reported over last week: ' + '<b>' + props.newC + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + props.lastC + '</b>': 'Hover over a county');
         };
 
-        // function to determine size of dots for dot map
-        function markerSize(num) {
-          return num * 120000;
-        }
+        // // function to determine size of dots for dot map
+        // function markerSize(num) {
+        //   return num * 120000;
+        // }
 
         // create dot map with size and color based on 'rate'
         // calculated in data.py
@@ -437,35 +328,39 @@ d3.json("static/data/usgeo.geojson", function(data) {
         // add info box to map
         info.addTo(map);
 
+        L.layerGroup([rates,geojson]).addTo(map);
+        // Note: The following commented code comes from an earlier draft
+        // of this site and provides functionality for a heatmap of voting
+        
         // create layerGroups for the two sets of overlays
-        var georates = L.layerGroup([rates,geojson]).addTo(map);
-        var dots = L.layerGroup(locations);
+        // var dots = L.layerGroup(locations);
 
-        var voteHeat = []
+        // var voteHeat = []
 
-        d3.csv("static/data/voteCount.csv", function(dataA) {
-          // console.log(dataA[0])
-          for (var i = 0; i < dataA.length; i++) {
-            var county = dataA[i]
-            if ((county.candidatevotes/county.totalvotes)>0.5){
-            voteHeat.push([county.Lat, county.Long_, (county.candidatevotes/county.totalvotes)])
-          }}
-        });
-        var votes = L.heatLayer(voteHeat, {gradient:{0.2: 'blue', 0.3: 'lime', 0.37: 'red'}, radius:16, maxZoom:13, minOpacity:0.1})
+        // d3.csv("static/data/voteCount.csv", function(dataA) {
+        //   // console.log(dataA[0])
+        //   for (var i = 0; i < dataA.length; i++) {
+        //     var county = dataA[i]
+        //     if ((county.candidatevotes/county.totalvotes)>0.5){
+        //     voteHeat.push([county.Lat, county.Long_, (county.candidatevotes/county.totalvotes)])
+        //   }}
+        // });
+        // var votes = L.heatLayer(voteHeat, {gradient:{0.2: 'blue', 0.3: 'lime', 0.37: 'red'}, radius:16, maxZoom:13, minOpacity:0.1})
 
-        var overlayMaps = {
-          "Rates": georates,
-          "Dots": dots,
-          "Heat": heat
-        };
+        // var overlayMaps = {
+        //   "Rates": georates,
+        //   "Dots": dots,
+        //   "Heat": heat
+        // };
 
-        var voteOverlay = {
-          "Votes": votes
-        }
+        // var voteOverlay = {
+        //   "Votes": votes
+        // }
 
         
 
-
+        // create Plotly charts to be updated with info upon 
+        // county selection
         var trace1 = {
           type: "scatter",
           mode: "lines",
@@ -491,7 +386,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
           title: 'Choose county by clicking on map',
           xaxis: {
             autorange: false,
-            // range: [dataD[dataD.length - 1], dataD[0]],
             range: [dataD[0], dataD[dataD.length - 1]],
             rangeselector: {buttons: [
                 {
@@ -509,7 +403,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
                 {step: 'all'}
               ]},
             rangeslider: {range: [dataD[0], dataD[dataD.length - 1]]},
-              // range: [dataD[dataD.length - 1], dataD[0]]},
             type: 'date'
           },
           yaxis: {
@@ -549,8 +442,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
             type: 'bar'
           }
         ];
-        
         Plotly.newPlot('bar', dataB);
+
         var layoutUpdate = {
           "margin.b": 150
         };
@@ -568,8 +461,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
             }
           }
         ];
-        
-        // var layout = { width: 100, height: 100, margin: { t: 0, b: 0 } };
         Plotly.newPlot('gauge', dataG, layout);
 
         var dataGC = [
@@ -585,26 +476,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
             }
           }
         ];
-        
-        // var layout = { width: 100, height: 100, margin: { t: 0, b: 0 } };
         Plotly.newPlot('gaugeC', dataGC, layout);
 
-      (function() {
-          var control = new L.Control({position:'bottomleft'});
-          control.onAdd = function(map) {
-              var azoom = L.DomUtil.create('a','resetzoom');
-              azoom.innerHTML = "Reset Zoom";
-              L.DomEvent
-                .disableClickPropagation(azoom)
-                .addListener(azoom, 'click', function() {
-                  map.setView(map.options.center, map.options.zoom);
-                },azoom);
-              return azoom;
-            };
-          return control;
-        })
-        .addTo(map);
-        
       L.control.layers(baseMaps).addTo(map);
       })
     })
@@ -615,11 +488,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
 
 
-// create controls for choosing map type and overlay
-// Note: in order to allow for multiple overlays at once, 
-// create only one control, place base maps first, and 
-// replace 'null' with the overlay maps array
-// // L.control.layers(overlayMaps,voteOverlay,{collapsed:false}).addTo(map);
+// Logic for adding multiple overlay maps, if we kept dots or heatmap
+// L.control.layers(overlayMaps,voteOverlay,{collapsed:false}).addTo(map);
 // L.control.layers(baseMaps).addTo(map);
 
 });

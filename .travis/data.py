@@ -5,17 +5,15 @@ import numpy as np
 import json
 import datetime
 
-# import daily covid data from git repository
-# from Johns Hopkins
+# read in COVID-19 confirmed cases file
 tsConfUS = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
 tsConfUS['FIPS'] = tsConfUS['FIPS'].fillna(0)
-# print(tsConfUS)
 tsConfUS = tsConfUS[(tsConfUS['Province_State'] != 'Alaska')]
 tsConfUS = tsConfUS[(tsConfUS['Admin2'] != 'Unassigned')]
+# preprocess some of the dates to be used later with datetime library
 datesArray = []
 i=0
 lastDate = tsConfUS.columns[-1]
-# print(lastDate)
 splitter = lastDate.split('/')
 month = splitter[0].zfill(2)
 day = splitter[1].zfill(2)
@@ -28,14 +26,8 @@ for j in range(1,7):
     curr = datetime.datetime.strftime(curr, '%y-%m-%d')
     splitter = curr.split('-')
     split1 = splitter[1]
-    # print(split1[0])
-    # print(split1[1])
     split2 = splitter[2]
-    # print(split2[0])
-    # print(split2[1])
-
     if (split1[0] == '0'):
-        # print('yes')
         month = split1[1]
     else:
         month = splitter[1]
@@ -45,12 +37,7 @@ for j in range(1,7):
         day = splitter[2]
     date = str(month + '/' + day + '/' + splitter[0])
     dateStrings.append(date)
-# print(dateStrings)
-
-
-
 for item in tsConfUS.columns:
-    # print(item)
     if (i>10):
         splitter = item.split('/')
         year = '20' + splitter[2]
@@ -62,31 +49,18 @@ for item in tsConfUS.columns:
 
 i=0
 for item in dateStrings:
-    # print(item)
     string = str(i) + 'ago'
     tsConfUS.rename(columns={item:string},inplace=True)
     i+=1
-# print(tsConfUS)
-# splitter = datesArray[0].split('/')
-# print(splitter[1])
-# print(datesArray[0][1])
-
+# export json file with dates in format usable by Plotly.js
 with open("static/data/dates.json", 'w') as outfile:
     json.dump(datesArray, outfile)
-# datuple = tuple(datesArray)
-# datesArray = pd.DataFrame()
-# for i in range(0,9):
-#     dates.drop(dates.columns[0],axis=1,inplace=True)
-# print(datesArray)
-# print(len(dates))
-
-# print(tsConfUS)
 # pad the fips code with leading zero if necessary
 tsConfUS['FIPS'] = tsConfUS['FIPS'].astype(int).astype(str).str.pad(width = 5, side='left', fillchar='0')
 tsConfUS.sort_values(['FIPS'],inplace=True)
 fipsy = tsConfUS['FIPS']
-# print(fipsy)
-# print(type(fipsy))
+# subtract previous values from confirmed cases in order to 
+# produce series representing new cases
 allDates = []
 for index, row in tsConfUS.iterrows():
     dates = []
@@ -98,38 +72,25 @@ for index, row in tsConfUS.iterrows():
         else:
             dates.append(row[i])
     allDates.append(dates)
-# print(allDates)
+# create a single array of all new case values for each county
+# in order to plot counties individually
 keyed = {}
 for i in range(0,(len(fipsy))):
     keyed.update({fipsy.values[i]: np.asarray(allDates[i])})
-    # print(allDates[i])
 tsConfFIPS = pd.DataFrame.from_dict(keyed, orient='index')
 tsConfFIPS['new'] = tsConfFIPS.apply(lambda r: tuple(r), axis=1).apply(np.array)
 tsConfFIPS = tsConfFIPS['new'].reset_index()
 tsConfFIPS.rename(columns={'index': 'FIPS', 'new': 'timeseries'},inplace=True)
 
+# read in and process COVID-19 death statistics
 tsDeathUS = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv')
 tsDeathUS['FIPS'] = tsDeathUS['FIPS'].fillna(0)
 tsDeathUS = tsDeathUS[(tsDeathUS['Province_State'] != 'Alaska')]
 
 tsDeathUS = tsDeathUS[(tsDeathUS['Admin2'] != 'Unassigned')]
-# datesArray = []
-# i=0
-# for item in tsDeathUS.columns:
-#     if (i>10):
-#         splitter = item.split('/')
-#         year = '20' + splitter[2]
-#         month = splitter[0].zfill(2)
-#         day = splitter[1].zfill(2)
-#         out = year + '-' + month + '-' + day
-#         datesArray.append(out)
-#     i+=1
-# pad the fips code with leading zero if necessary
 tsDeathUS['FIPS'] = tsDeathUS['FIPS'].astype(int).astype(str).str.pad(width = 5, side='left', fillchar='0')
 tsDeathUS.sort_values(['FIPS'],inplace=True)
 fipsyD = tsDeathUS['FIPS']
-# print(fipsyD)
-# print(type(fipsyD))
 allDatesD = []
 for index, row in tsDeathUS.iterrows():
     dates = []
@@ -144,8 +105,6 @@ tsDeathFIPS = pd.DataFrame.from_dict(keyed, orient='index')
 tsDeathFIPS['new'] = tsDeathFIPS.apply(lambda r: tuple(r), axis=1).apply(np.array)
 tsDeathFIPS = tsDeathFIPS['new'].reset_index()
 tsDeathFIPS.rename(columns={'index': 'FIPS', 'new': 'timeseriesD'},inplace=True)
-# print(tsDeathFIPS)
-
 
 # import census total population data
 censusTot = pd.read_csv('https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv', encoding = "ISO-8859-1")
@@ -160,9 +119,6 @@ censusRace['FIPS'] = censusRace['STATE'].astype(str).str.pad(width = 2, side='le
 censusRace = censusRace[['FIPS','SEX','ORIGIN','RACE','POPESTIMATE2010']]
 raceGrouped = censusRace.groupby(['FIPS','ORIGIN','RACE']).agg({'POPESTIMATE2010':'sum'}).reset_index('FIPS')
 fipsList = raceGrouped.FIPS.unique()
-data1 = censusRace[(censusRace['FIPS'] == '02050')]
-data1 = data1[(data1['RACE'] == 1)]
-data1 = data1[(data1['ORIGIN'] == 0)]
 allData = []
 allHisp = []
 for item in fipsList:
@@ -189,12 +145,9 @@ censusAge['FIPS'] = censusAge['STATE'].astype(str).str.pad(width = 2, side='left
 
 # logic to produce voteCount from imported csv
 voteCount = pd.read_csv('static/data/countypres_2000-2016.csv')
-# print(voteCount)
 voteCount = voteCount[(voteCount['state'] != 'Alaska')]
 voteCount = voteCount[(voteCount['FIPS'].notna() & voteCount['candidatevotes'].notna())]
-# print(voteCount)
 zeros = voteCount['FIPS'].astype(int)
-# print(zeros)
 voteCount = voteCount[(voteCount['year'] == 2016)]
 voteCount['FIPS'] = voteCount['FIPS'].fillna(0)
 voteCount['FIPS'] = voteCount['FIPS'].astype(int).astype(str).str.pad(width = 5, side='left', fillchar='0')
@@ -243,26 +196,18 @@ usgeo = usgeo.merge(allData, on = 'FIPS')
 usgeo = usgeo.merge(voteCount, on = 'FIPS')
 usgeo = usgeo.merge(tsConfFIPS, on = 'FIPS')
 usgeo = usgeo.merge(tsDeathFIPS, on = 'FIPS')
-
-
-
 usgeo.sort_values(['FIPS'],inplace=True)
-# for item in usgeo.columns:
-    # print(item)
-
-# voteCount = voteCount.merge(latlongs,how='left', on = 'FIPS').dropna()
 
 # calculate fields to be used in JavaScript map
 usgeo['lastC'] = usgeo['0ago']
-# print(usgeo['lastC'])
-# print(usgeo.iloc[:,-31])
-# print(usgeo['POPESTIMATE2019'])
 usgeo['rateC'] = (usgeo['0ago'] - usgeo['6ago'])/(7*(usgeo['POPESTIMATE2019']))
-# usgeo['rateC'] = usgeo['rateC']
 usgeo['rateC'] = usgeo['rateC'].round(decimals = 6)
 usgeo['newC'] = (usgeo['0ago'] - usgeo['6ago'])
-# usgeo['perc'] = (usgeo['lastC']/usgeo['POPESTIMATE2019'])
 usgeo['perten'] = (10000*usgeo['newC']/usgeo['POPESTIMATE2019']).round(decimals = 4)
+
+# remove arrays from the file that will become
+# our GeoJSON as they are not supported. These 
+# will be exported separately
 tsConfFIPS = pd.DataFrame(data = {'NAME':usgeo['NAME'], 'FIPS':usgeo['FIPS']})
 tsConfFIPS['timeseries'] = usgeo['timeseries']
 tsConfFIPS.set_index('FIPS', inplace=True, drop=True)
@@ -273,15 +218,11 @@ tsDeathFIPS['timeseries'] = usgeo['timeseriesD']
 tsDeathFIPS.set_index('FIPS', inplace=True, drop=True)
 tsDeathFIPS.drop(labels='NAME', axis=1, inplace=True)
 
-# print(usgeo['Province_State'])
-# for item in usgeo.columns:
-#     print(item)
+# remove unnecessary columns and export all files
+# to be used in visualization
 usgeo = usgeo[['NAME','FIPS','geometry', 'Province_State', 'POPESTIMATE2019','rateC','lastC','newC','perten','WHT','AA','AI','AS','PI','MX', 'HISP','trumpVotes','clintonVotes','otherVotes']]
-# for item in usgeo[0]:
-    # print(type(item))
 tsConfFIPS.to_json("static/data/confirmedTS.json", orient="columns")
 tsDeathFIPS.to_json("static/data/deathsTS.json", orient="columns")
-# datesArray.to_json("static/data/dates.json")
 usgeo.to_file("static/data/usgeo.geojson", driver='GeoJSON')
 
 # uncomment in order to push new voteCount.csv file,

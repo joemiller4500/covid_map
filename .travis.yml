@@ -3,20 +3,13 @@ python:
 - '3.6'
 install:
 - pip install -r requirements.txt
-# - pip install travis-wait-improved
-# - install travis_wait
-env:
-  global:
-    - secure: sR0UGE+dJ8k23jSG5pvZf2MIhiwF/EZwW5INhfeuio/BF963MzZj9kby6jwAo9ZR/oCvuGp+tj0lgB9+e5bKpjkSVIpACYbwSV81/fkK1g/CVj/aHBTvhryCYZ7GKRvyTDvi9hELNfWJvKctLGwSRZLgPfu9JhTahWDC0FgZ0qX0hlRx1zz15sDp9WFrDANeZGSgWIC+OxqagHwr9ARWHqO3gCpXITCO8caldy50A9GAoepVDw5l8ABpccljJO8UKZAkTryBPLW8+jexPSwIMVU1J3bUH93hX7yDSu00cNPrnGTs5TqySlqlNASKlFsutctuYVGfiq5o5Ofo9bNGXCHQlwQgN8OiCEeCoDwNHurvrGFVNRv1FY21O9OarbVxP8gsCF4NSUzY5VWRvGpz9LuTCAjV+G5GLqIW3RoS09JTqWTVW+l4ov8cxdiIIquLansBAyH33CEgdu8NcXr3nZ28Qkht8KC8XH44wgnvyqZL0ehH3yJkSP8UoSrSmQsJBwYwhhy2mmNTjJqrHLNb347NzdS8rFOczOsP3OpTqRhmx0Dlgax5RRT+15BAnWVmtUPIHxrvJIvCwofdLGFXbBHsJkWUD+EN6N1wrs4FahRQTvDwZqCTXH/kfsihXMDK5xITkJOkUo+n1yjRDAUEIrjw/x8NSGwxUSFwcRHLImA=
 script:
 - export API_KEY=$API_KEY
 - python .travis/data.py
-# - travis-wait-improved --timeout 15m .travis/make.py
-# - travis_wait 480 python .travis/make.py
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  github_token: $GITHUB_TOKEN
   keep_history: true
   on:
     branch: master

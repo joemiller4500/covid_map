@@ -102,6 +102,7 @@ for index, row in tsConfUS.iterrows():
 keyed = {}
 for i in range(0,(len(fipsy))):
     keyed.update({fipsy.values[i]: np.asarray(allDates[i])})
+    print(allDates[i])
 tsConfFIPS = pd.DataFrame.from_dict(keyed, orient='index')
 tsConfFIPS['new'] = tsConfFIPS.apply(lambda r: tuple(r), axis=1).apply(np.array)
 tsConfFIPS = tsConfFIPS['new'].reset_index()

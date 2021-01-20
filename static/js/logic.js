@@ -86,12 +86,12 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
         // function to give color to features on map
         function getColor(d) {
-          return d > 0.09 ? '#67000d' :
-                d > 0.08  ? '#a50f15' :
-                d > 0.07  ? '#cb181d' :
-                d > 0.06  ? '#ef3b2c' :
-                d > 0.05   ? '#fb6a4a' :
-                d > 0.04   ? '#fc9272' :
+          return d > 0.14 ? '#67000d' :
+                d > 0.12  ? '#a50f15' :
+                d > 0.10  ? '#cb181d' :
+                d > 0.08  ? '#ef3b2c' :
+                d > 0.06   ? '#fb6a4a' :
+                d > 0.045   ? '#fc9272' :
                 d > 0.03   ? '#fcbba1' :
                 d > 0.02   ? '#fee0d2' :
                 d > 0      ? '#fff5f0':
@@ -103,7 +103,7 @@ d3.json("static/data/usgeo.geojson", function(data) {
         // calculated in data.py
         function style(feature) {
           return {
-              fillColor: getColor(feature.properties.perc),
+              fillColor: getColor((feature.properties.perten)/10000),
               weight: 1,
               opacity: 1,
               color: 'white',
@@ -144,7 +144,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
         function setLineTraces(feature){
 
           var fips = feature.target.feature.properties.FIPS
-          var title = feature.sourceTarget.feature.properties.NAME + " County"
+          // var title = feature.sourceTarget.feature.properties.NAME + " County, " + feature.sourceTarget.feature.properties.Province_State
+          var title = " "
           var trace1 = {
             type: "scatter",
             mode: "lines",
@@ -255,8 +256,13 @@ d3.json("static/data/usgeo.geojson", function(data) {
               type: 'bar'
             }
           ];
+          var layoutUpdate = {
+            "margin.b": 150
+          };
+          
           
           Plotly.react('bar', dataB);
+          Plotly.relayout(bar, layoutUpdate);
           // Plotly.restyle("bar","y",[feature.target.feature.properties.WHT, feature.target.feature.properties.AA, feature.target.feature.properties.AI, feature.target.feature.properties.AS, feature.target.feature.properties.PI, feature.target.feature.properties.MX])
         }
 
@@ -279,17 +285,19 @@ d3.json("static/data/usgeo.geojson", function(data) {
         }
 
         function setGaugeCTrace(feature){
+          var fips = feature.target.feature.properties.FIPS
+          
           var dataGC = [
             {
               domain: { x: [0, 1], y: [0, 1] },
-              value: (feature.target.feature.properties.newC),
-              title: { text: "Increase in cases over last week" },
+              value: (feature.target.feature.properties.perten),
+              title: { text: "New cases over last week <br> per 10,000 popluation" },
               type: "indicator",
               mode: "gauge+number",
               // line:{color: "#ff0000"}
               gauge: {
                 bar: { color: "red" },
-              //   axis: { range: [null, 100] }
+                axis: { range: [null, 2000] }
               }
             }
           ];
@@ -304,6 +312,10 @@ d3.json("static/data/usgeo.geojson", function(data) {
           setBarTrace(feature)
           setGaugeTrace(feature)
           setGaugeCTrace(feature)
+          // var fips = feature.target.feature.properties.FIPS
+          var title = feature.sourceTarget.feature.properties.NAME + " County, " + feature.sourceTarget.feature.properties.Province_State
+          var element = document.getElementById("title"); 
+          element.innerHTML = title;
         }
 
 
@@ -364,7 +376,7 @@ d3.json("static/data/usgeo.geojson", function(data) {
 
         info.update = function (props) {
             this._div.innerHTML = (props ? '<h4>' + props.NAME + '</h4>' + 
-                'Total cases over last week <br> (per day, as percentage of total cases reported): ' + '<b>' + props.perc + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + props.lastC + '</b>': 'Hover over a county');
+                'New cases over last week per 10,000 population: ' + '<b>' + props.perten + '</b>' + '<br /> Last confirmed COVID Case Total: ' + '<b>' + props.lastC + '</b>': 'Hover over a county');
         };
 
         // function to determine size of dots for dot map
@@ -458,8 +470,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
           type: "scatter",
           mode: "lines",
           name: 'New Cases',
-          x: dataD,
-          y: dataE.timeseries['01001'].map(String),
+          x: [0],
+          y: [0],
           line: {color: '#ff0000'}
         }
 
@@ -467,8 +479,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
           type: "scatter",
           mode: "lines",
           name: 'Total Deaths',
-          x: dataD,
-          y: dataF.timeseries['01001'].map(String),
+          x: [0],
+          y: [0],
           line: {color: '#000000'}
         }
 
@@ -511,7 +523,7 @@ d3.json("static/data/usgeo.geojson", function(data) {
         console.log(data.features[0].properties.clintonVotes)
         dataR = [{
           type: 'scatterpolar',
-          r: [data.features[0].properties.clintonVotes,data.features[0].properties.trumpVotes,data.features[0].properties.otherVotes],
+          r: [0,0,0],
           theta: ['Clinton','Trump','Other', 'Clinton'],
           fill: 'toself',
           line: {color:'#ff0000'}
@@ -533,17 +545,21 @@ d3.json("static/data/usgeo.geojson", function(data) {
         var dataB = [
           {
             x: ['White', 'African American', 'American Indian/Alaska Native', 'Asian', 'Native Hawaiian/Pacific Islander','2 or more races'],
-            y: [data.features[0].properties.WHT, data.features[0].properties.AA, data.features[0].properties.AI, data.features[0].properties.AS, data.features[0].properties.PI, data.features[0].properties.MX],
+            y: [0,0,0,0,0,0],
             type: 'bar'
           }
         ];
         
         Plotly.newPlot('bar', dataB);
+        var layoutUpdate = {
+          "margin.b": 150
+        };
+        Plotly.relayout(bar, layoutUpdate);
         
         var dataG = [
           {
             domain: { x: [0, 1], y: [0, 1] },
-            value: (100*data.features[0].properties.HISP),
+            value: (0),
             title: { text: "Percent Hispanic" },
             type: "indicator",
             mode: "gauge+number",
@@ -559,8 +575,8 @@ d3.json("static/data/usgeo.geojson", function(data) {
         var dataGC = [
           {
             domain: { x: [0, 1], y: [0, 1] },
-            value: (data.features[0].properties.newC),
-            title: { text: "Increase in cases over last week" },
+            value: 0,
+            title: { text: "New cases over last week <br> per 10,000 popluation" },
             type: "indicator",
             mode: "gauge+number",
             gauge: {

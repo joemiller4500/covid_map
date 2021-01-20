@@ -39,11 +39,16 @@
       </div>
       <div class = "col-sm-4">
         <div id="radar"></div>
+        <p style="font-size:70%; text-align:center;">2016 Presidential Voting</p>
       </div>
     </div>
     <div class="row">
       <div class="col-md-4">
         <div id="gauge"></div>
+        <p style="font-size:70%;">Note: The US Census Bureau considers Hispanic a distinction of origin, while the categories under the
+          bar chart are considered races. Thus, those who identify as Hispanic are also identified by one or more
+          of the races shown to the right.
+        </p>
       </div>
       <div class="col-md-8">
         <div id="bar"></div>
@@ -77,13 +82,32 @@
         To that end, I make no conclusions about correlation with the spread of the virus, I simply encourage you to 
         click around and make your own conclusions.
       </p>
+      <p>
+        Disclaimer: This data is intended to give some idea of what is happening with COVID-19 at the county level, but 
+        should not be considered an actionable source on its own. Data is aggregated and shown automatically and as the 
+        creator of this site I do not take responsibility for consequences of the use of this information. The COVID-19 
+        data is often corrected for mistakes, as can be seen in negative changes in number of cases on the line chart. 
+        I do stand by the usefulness of these graphics, however no action should be taken without further research. That 
+        said, the data used on this site is all held to a very high standard of accuracy, most coming from official sources 
+        used by government and industry alike.
+      </p>
       <hr>
       <p>
         All COVID-19 data comes from the COVID-19 Data Repository by the Center for Systems Science and Engineering 
         (CSSE) at Johns Hopkins University and can be found <a href="https://github.com/CSSEGISandData/COVID-19">
         https://github.com/CSSEGISandData/COVID-19</a>. All data on total population as well as racial/ethnic data comes 
         from the US Census Bureau, along with shapefiles for county lines. Election data comes from Stephen Pettigrew and 
-        was published by the Harvard Dataverse.
+        was published by the Harvard Dataverse: MIT Election Data and Science Lab, 2018, "County Presidential Returns 
+        2000-2016.md", County Presidential Election Returns 2000-2016, <a href="https://doi.org/10.7910/DVN/VOQCHQ/GG18M2">
+        https://doi.org/10.7910/DVN/VOQCHQ/GG18M2</a>, Harvard Dataverse, V6.
+      </p>
+      <hr>
+      <p>
+        For anyone interested in the code behind this site, please visit my <a href="https://github.com/joemiller4500/covid_map">
+        git repository</a> from which this site is hosted. All code inspiration comes from the doccumentation of the libraries
+        used and from public forums. If you're interested in my experience creating this site, or if any questions come up, please 
+        reach out to me via <a href="https://www.linkedin.com/in/joseph-wa-miller/">LinkedIn</a> or <a href="mailto:joemiller4500@gmail.com">
+        email.</a>
       </p>
     </div>
     <div class="col-lg-1"></div>
@@ -98,7 +122,7 @@
   <!-- d3 JavaScript -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <!-- API key -->
-  <script type="text/javascript" src="static/js/config.js"></script>
+  <!-- <script type="text/javascript" src="static/js/config.js"></script> -->
   <!-- HeatLayer JS -->
   <script type="text/javascript" src="static/js/leaflet-heat.js"></script>
   <!-- Our JS -->

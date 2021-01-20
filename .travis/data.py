@@ -203,7 +203,7 @@ usgeo['lastC'] = usgeo['0ago']
 usgeo['rateC'] = (usgeo['0ago'] - usgeo['6ago'])/(7*(usgeo['POPESTIMATE2019']))
 usgeo['rateC'] = usgeo['rateC'].round(decimals = 6)
 usgeo['newC'] = (usgeo['0ago'] - usgeo['6ago'])
-usgeo['perten'] = (10000*usgeo['newC']/usgeo['POPESTIMATE2019']).round(decimals = 4)
+usgeo['perten'] = (10000*usgeo['newC']/usgeo['POPESTIMATE2019']).round(decimals = 5)
 
 # remove arrays from the file that will become
 # our GeoJSON as they are not supported. These 

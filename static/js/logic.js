@@ -1,4 +1,20 @@
-
+// insert last update into HTML 
+function fetchHeader(url, wch) {
+  try {
+      var req=new XMLHttpRequest();
+      req.open("HEAD", url, false);
+      req.send(null);
+      if(req.status== 200){
+          return req.getResponseHeader(wch);
+      }
+      else return false;
+  } catch(er) {
+      return er.message;
+  }
+}
+var update = "Last update: " + fetchHeader('static/data/usgeo.geojson','Last-Modified');
+var element = document.getElementById("update"); 
+          element.innerHTML = update;
 // import GeoJSON file created in data.py
 d3.json("static/data/usgeo.geojson", function(data) {
   var geojson;
@@ -86,7 +102,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
           }
   
           var dataT = [trace1,trace2];
-          console.log([dataD[dataD.length - 1], dataD[0]])
   
           var layout = {
             title: title ,
@@ -280,7 +295,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
         locations = []
         heatLocal = []
         localArray = []
-        console.log(data.features.length)
         // for (var i = 0; i < data.features.length; i++) {
         //     props = data.features[i].properties
         //     latlng = [data.features[i].properties.Lat,data.features[i].properties.Long_]    
@@ -305,8 +319,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
         // create array from which to create heatLayer
         var max = Math.max(...localArray)
         var min = Math.min(...localArray)
-        // console.log(localArray)
-        // console.log(max)
         for (var i = 0; i < data.features.length; i++) {
           props = data.features[i].properties
           latlng = [props.Lat,props.Long_] 
@@ -315,7 +327,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
           }
         }
 
-        // console.log(heatLocal.length)
         var heat = L.heatLayer(heatLocal, {gradient:{0.2: 'blue', 0.3: 'lime', 0.4: 'red'}, radius:20, maxZoom:13, minOpacity:0.1});
         // create map object, appended to div named 'map' 
         // in index.html
@@ -338,7 +349,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
         // var voteHeat = []
 
         // d3.csv("static/data/voteCount.csv", function(dataA) {
-        //   // console.log(dataA[0])
         //   for (var i = 0; i < dataA.length; i++) {
         //     var county = dataA[i]
         //     if ((county.candidatevotes/county.totalvotes)>0.5){
@@ -380,7 +390,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
         }
 
         var dataT = [trace1,trace2];
-        console.log([dataD[dataD.length - 1], dataD[0]])
 
         var layout = {
           title: 'Choose county by clicking on map',
@@ -413,7 +422,6 @@ d3.json("static/data/usgeo.geojson", function(data) {
         };
 
         Plotly.newPlot('timeseries', dataT, layout);
-        console.log(data.features[0].properties.clintonVotes)
         dataR = [{
           type: 'scatterpolar',
           r: [0,0,0],

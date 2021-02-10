@@ -1,3 +1,5 @@
+require('dotenv').config();
+console.log(process.env.API_KEY)
 // insert last update into HTML 
 function fetchHeader(url, wch) {
   try {

@@ -1,5 +1,5 @@
-require('dotenv').config();
-console.log(process.env.API_KEY)
+// require('dotenv').config();
+// console.log(process.env.API_KEY)
 // insert last update into HTML 
 function fetchHeader(url, wch) {
   try {
@@ -44,15 +44,29 @@ d3.json("static/data/usgeo.geojson", function(data) {
         };
 
         // function to give color to features on map
+        // Note: Original commented out because numbers have dropped
+        // function getColor(d) {
+        //   return d > 70 ? '#67000d' :
+        //         d > 60  ? '#a50f15' :
+        //         d > 50  ? '#cb181d' :
+        //         d > 40  ? '#ef3b2c' :
+        //         d > 30   ? '#fb6a4a' :
+        //         d > 20   ? '#fc9272' :
+        //         d > 10   ? '#fcbba1' :
+        //         d > 5   ? '#fee0d2' :
+        //         d > 0      ? '#fff5f0':
+        //         d = 'null'   ? '#ccffcc' :
+        //                         '#fff5f0'
+        // }
         function getColor(d) {
-          return d > 70 ? '#67000d' :
-                d > 60  ? '#a50f15' :
-                d > 50  ? '#cb181d' :
-                d > 40  ? '#ef3b2c' :
-                d > 30   ? '#fb6a4a' :
-                d > 20   ? '#fc9272' :
-                d > 10   ? '#fcbba1' :
-                d > 5   ? '#fee0d2' :
+          return d > 35 ? '#67000d' :
+                d > 30  ? '#a50f15' :
+                d > 25  ? '#cb181d' :
+                d > 20  ? '#ef3b2c' :
+                d > 15   ? '#fb6a4a' :
+                d > 10   ? '#fc9272' :
+                d > 5   ? '#fcbba1' :
+                d > 2.5   ? '#fee0d2' :
                 d > 0      ? '#fff5f0':
                 d = 'null'   ? '#ccffcc' :
                                 '#fff5f0'
